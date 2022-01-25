@@ -17,3 +17,51 @@ jobs:
         run: pip install --user black
       - name: "Run style check with black"
         run: black --check .
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8.10'
+      - name: "pip install --user numpy"
+        run: pip install --user numpy
+      - name: "pip install --user matplotlib"
+        run: pip install --user matplotlib
+      - name: "pip install --user pytest"
+        run: pip install --user pytest
+        # no need for unittest because its a standard module in 3.8.10
+      - name: "pip install --user coverage"
+        run: pip install --user coverage
+      - name: "coverage run -m pytest"
+        run: coverage run -m pytest
+      - name: "Archive coverage report"
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-information
+          path: .coverage
+          retention-days: 1
+          
+  coverage_report:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8.10'
+      - name: "pip install --user coverage"
+        run: pip install --user coverage
+      - name: "get coverage from job:test"
+        uses: actions/download-artifact@v2
+        with:
+          name: .coverage
+      - name: "tranform to xml"
+        run: coverage xml
+      - name: "upload "
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-final
+          path: coverage.xml
+          retention-days: 14
