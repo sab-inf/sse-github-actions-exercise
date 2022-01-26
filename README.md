@@ -7,3 +7,5 @@ The code used in this exercise is based on [Chapter 7 of the book "Learning Scie
 ## License
 
 Please check the `LICENSE` file in this repository.
+
+![SSE CI/CD](https://github.com/sab-inf/sse-github-actions-exercise/actions/workflows/main.yml/badge.svg?branch=main)
